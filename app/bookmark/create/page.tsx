@@ -80,6 +80,7 @@ export default function CreateBookMark() {
                                             id={field.name}
                                             aria-invalid={fieldState.invalid}
                                             required
+                                            placeholder="Title"
                                         />
                                         {
                                             fieldState.error && (
@@ -101,6 +102,7 @@ export default function CreateBookMark() {
                                             id={field.name}
                                             aria-invalid={fieldState.invalid}
                                             required
+                                            placeholder="www.example.com"
                                         />
                                         {
                                             fieldState.error && (
@@ -122,6 +124,7 @@ export default function CreateBookMark() {
                                             id={field.name}
                                             aria-invalid={fieldState.invalid}
                                             className="resize-none"
+                                            placeholder="Description goes here ..."
                                         />
                                         {
                                             fieldState.error && (
