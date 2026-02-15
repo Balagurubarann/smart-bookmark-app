@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { Bookmark as BookmarkIcon, Star } from "lucide-react";
 import { 
   Empty,
@@ -21,9 +23,24 @@ import CopyButton from "@/components/copy-button";
 import BookmarkDeleteButton from "@/components/bookmark-delete-button";
 import RealtimeRefresh from "@/components/realtime-refresh";
 
+type Bookmark = {
+  id: string;
+  title: string;
+  url: string;
+  description: string | null;
+  is_favourite: boolean;
+}
+
+type BookmarkWithError = {
+  error: boolean;
+  message: string;
+  data: Bookmark[] | null;
+}
+
 export default async function Home() {
 
-  const bookmarks = await getAllBookmark();
+  const bookmarks: BookmarkWithError = await getAllBookmark();
+  const hasBookmarks = bookmarks.data && bookmarks.data.length > 0;
 
   return (
     <div className="container mx-auto w-screen px-4 py-8 space-y-8">
@@ -31,7 +48,7 @@ export default async function Home() {
       <RealtimeRefresh />
 
       {
-        bookmarks?.length > 0 && (
+        hasBookmarks && (
           <div className="flex justify-center md:justify-start">
             <Button  asChild>
               <Link href="/bookmark/create">
@@ -44,17 +61,17 @@ export default async function Home() {
       }
 
         {
-          bookmarks?.length > 0 ? (
+          hasBookmarks ? (
             <>
               <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 place-items-center">
                 {
-                  bookmarks.map((bookmark, index) => {
+                  bookmarks.data!.map((bookmark, index) => {
                     return (
                       <Card className="md:w-[55vmin] w-[65vmin]" key={index}>
                         <CardHeader>
                           <CardTitle className="flex gap-2 items-center justify-between">
                             <div className="flex gap-2 items-center">
-                              <Link href={bookmark.url} className="font-medium">
+                              <Link href={bookmark.url} className="font-medium" target="_blank">
                                 {
                                   bookmark.title
                                 }
@@ -72,7 +89,9 @@ export default async function Home() {
 
                           </CardTitle>
                           <CardDescription>
-                            { bookmark.description.slice(0, 25) + "..." || "No description found"}
+                            {bookmark.description
+                                ? `${bookmark.description.slice(0, 25)}...`
+                                : "No description found"}
                           </CardDescription>
                         </CardHeader>
                         <CardContent className="">

@@ -7,33 +7,45 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useTransition } from "react";
 
-export default function BookmarkDeleteButton({ bookmarkId }: { bookmarkId: string }) {
+type Props = {
+  bookmarkId: string;
+};
+
+export default function BookmarkDeleteButton({ bookmarkId }: Props) {
 
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
+
+  const handleDelete = () => {
+    if (!bookmarkId) return;
+
+    startTransition(() => {
+      (async () => {
+        try {
+          await deleteBookmark(bookmarkId);
+          router.refresh();
+          toast.success("Bookmark deleted successfully");
+        } catch (err: any) {
+          toast.error(err?.message || "Failed to delete bookmark");
+        }
+      })();
+    });
+  };
+
 	return (
 		<Button 
       variant="outline" 
-      className="cursor-pointer"
+      size="icon"
+      className="cursor-pointer disabled:opacity-60"
       disabled={isPending}
-      onClick={() => {
-        startTransition(() => {
-          deleteBookmark(bookmarkId)
-          .then(() => {
-            router.refresh();
-          })
-          .then(() => {
-            toast.success("Bookmark deleted successfully")
-          })
-          .catch((err) => {
-            toast.error(err.message || "Failed to delete bookmark")
-          })
-        })
-      }}
+      onClick={handleDelete}
     >
-          <Trash size={"18"} className="text-red-600" />
-        </Button>
+          <Trash 
+            size={"18"} 
+            className={`text-red-600 ${isPending ? "opacity-50" : ""}`}
+          />
+    </Button>
 	)
 
 }

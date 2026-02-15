@@ -79,7 +79,8 @@ export async function getAllBookmark() {
 		if (user === null) {
 			return {
 				error: true,
-				message: "User not authenticated"
+				message: "User not authenticated",
+				data: null
 			}
 		}
 
@@ -98,21 +99,29 @@ export async function getAllBookmark() {
 		if (bookmarkError || bookmarks === null) {
 			return {
 				error: true,
-				message: "Failed to fetch bookmark"
+				message: "Failed to fetch bookmark",
+				data: bookmarks
 			}
 		}
 
-		return bookmarks;
+		return { 
+			error: false,
+			message: "Bookmarks fetched successfully",
+			data: bookmarks
+		};
 
 	} catch (err) {
-		console.log(err);
-		throw new Error(err.message);
+		if (err instanceof Error) {
+	      throw new Error(err.message);
+	    }
+
+	    throw new Error("Unexpected error while fetching bookmarks");
 	}
 
 }
 
 
-export async function deleteBookmark(id: { id: string }) {
+export async function deleteBookmark(bookmarkId: string) {
 
 	try {
 
@@ -127,11 +136,12 @@ export async function deleteBookmark(id: { id: string }) {
 
 		const supabase = await createClient();
 
-		const { data: bookmarks, error: bookmarkError } = await supabase.from("bookmark")
+		const { error: bookmarkError } = await supabase.from("bookmark")
 		.delete()
-		.eq("id", id);
+		.eq("id", bookmarkId)
+		.eq("user_id", user.id)
 
-		if (bookmarkError || bookmarks === null) {
+		if (bookmarkError) {
 			return {
 				error: true,
 				message: "Failed to delete bookmark"
@@ -139,10 +149,18 @@ export async function deleteBookmark(id: { id: string }) {
 		}
 
 		
-		revalidatePath("/bookmark/create")
+		revalidatePath("/");
+
+		return {
+	      error: false,
+	      message: "Bookmark deleted successfully",
+	    };
 
 	} catch (err) {
-		console.log(err);
-		throw new Error(err.message);
+		 if (err instanceof Error) {
+	      throw new Error(err.message);
+	    }
+
+	    throw new Error("Unexpected error while deleting bookmark");
 	}
 }

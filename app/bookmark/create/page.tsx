@@ -32,8 +32,7 @@ export default function CreateBookMark() {
             url: "",
             description: "",
             is_favourite: false
-        },
-        resolver: zodResolver(formSchema),
+        }
     })
 
     const router = useRouter();
