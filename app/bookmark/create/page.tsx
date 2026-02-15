@@ -102,7 +102,7 @@ export default function CreateBookMark() {
                                             id={field.name}
                                             aria-invalid={fieldState.invalid}
                                             required
-                                            placeholder="www.example.com"
+                                            placeholder="https://www.example.com/"
                                         />
                                         {
                                             fieldState.error && (
