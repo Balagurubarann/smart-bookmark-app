@@ -71,11 +71,6 @@ export default async function Home() {
                         <CardHeader>
                           <CardTitle className="flex gap-2 items-center justify-between">
                             <div className="flex gap-2 items-center">
-                              <Link href={bookmark.url} className="font-medium" target="_blank">
-                                {
-                                  bookmark.title
-                                }
-                              </Link>
                               <span>
                                 { 
                                   bookmark.is_favourite && (
@@ -83,6 +78,11 @@ export default async function Home() {
                                   ) 
                                 } 
                               </span>
+                              <Link href={bookmark.url} className="font-medium" target="_blank">
+                                {
+                                  bookmark.title
+                                }
+                              </Link>
                             </div>
 
                             <BookmarkDeleteButton bookmarkId={bookmark.id} />
