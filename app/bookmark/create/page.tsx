@@ -160,7 +160,9 @@ export default function CreateBookMark() {
                             <Field orientation="horizontal" className="w-full">
                                 <Button
                                     type="submit"
-                                    className="grow"
+                                    className={`grow 
+                                        ${form.formState.isSubmitting ? "cursor-not-allowed": "cursor-pointer"}
+                                    `}
                                     disabled={form.formState.isSubmitting}
                                 >
                                     Add Bookmark
